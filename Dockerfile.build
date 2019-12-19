@@ -1,0 +1,21 @@
+#Build Base image
+FROM node:alpine as builder
+
+#Working directory
+WORKDIR '/app'
+
+#Dependencies 
+COPY package.json .
+RUN npm install
+COPY . .
+
+#Startup command
+CMD ["npm", "start"]
+
+#Base image for Production
+FROM nginx
+
+#Copy the build contents to document root
+#/app/build - the builder will create the build in this location
+
+COPY --from=builder /app/build /usr/share/nginx/html
